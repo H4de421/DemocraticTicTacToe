@@ -1,5 +1,6 @@
 #include "Game.hpp"
 
+/* constructor */
 Game::Game(Board *board)
 {
     this->board = board;
@@ -7,6 +8,15 @@ Game::Game(Board *board)
     this->playerTurn = true;
 }
 
+
+int Game::getWinner()
+{
+    return this->winner;
+}
+
+/*
+function used to launch a game
+*/
 void Game::startGame(void) 
 {
     bool quit = false;
@@ -15,7 +25,7 @@ void Game::startGame(void)
     this->board->printCanevas();
     this->board->printCursor();
     this->winner = 0; // 0 => drow / 1=>player / -1=>IA
-    while(this->winner==0 )//&& !quit)
+    while(this->winner==0 )
     {
         if (playerTurn)
         {
@@ -30,12 +40,15 @@ void Game::startGame(void)
             this->board->play(gridId, false, true);
             this->closeTurn(gridId);
 
-            this->board->cursorPos = this->board->getAvailablePosition()[0];
+            this->board->setCursorPos(this->board->getAvailablePosition()[0]);
             this->board->printCursor();
         }
     }
 }
 
+/*
+function called after the player or the Automaton played
+*/
 void Game::closeTurn(int playedPos)
 {
     int isWon =  this->board->isGameOver(playedPos, this->playerTurn);
@@ -44,16 +57,9 @@ void Game::closeTurn(int playedPos)
     this->board->nextTurn();    
 }
 
-int Game::getWinner()
-{
-    return this->winner;
-}
-
-/* player turn */
-
-
-/* automaton turn */
-
+/*
+function used to catch keyboard input
+*/
 char Game::getch (void)
 {
 
@@ -70,6 +76,9 @@ char Game::getch (void)
     return ch;
 }
 
+/*
+function used to process input
+*/
 bool Game::inputHandler(char input)
 {
     switch (input)
@@ -91,8 +100,8 @@ bool Game::inputHandler(char input)
     case 'e':
         if (this->playerTurn)
         {
-            this->board->play(this->board->cursorPos, true, true);
-            this->closeTurn(this->board->cursorPos);
+            this->board->play(this->board->getCursorPos(), true, true);
+            this->closeTurn(this->board->getCursorPos());
         }
         break;
     case 'p':

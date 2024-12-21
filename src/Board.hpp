@@ -8,16 +8,19 @@
 class Board
 {
 private:
-
-public:
     int cursorPos;
     int lastPlayed;
     std::vector<int> grid;
+public:
     /*
     constructors
     */
     Board();
     Board(Board *board);
+
+    /* == setter/getter == */
+    int getCursorPos();
+    void setCursorPos(int newValue);
 
     /*
     print the canvas

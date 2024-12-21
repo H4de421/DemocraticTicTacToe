@@ -5,11 +5,17 @@ Automaton::Automaton(Board *board){
     this->board = board;
 }
 
+/*
+function used to pick a random available position
+*/
 int Automaton::randomThought(std::vector<int> positions)
 {
     return positions[rand() % positions.size() + 1];
 }
 
+/*
+function used to pick the available position
+*/
 int Automaton::complexThougth()
 {
     int best_id = 0;
@@ -17,7 +23,6 @@ int Automaton::complexThougth()
 
     std::vector<int> positions = this->board->getAvailablePosition();
 
-    //std::cout << "\e[6B";
     for(int i = 0; i<positions.size(); i++) {
         
         int pos = positions[i];
@@ -25,13 +30,11 @@ int Automaton::complexThougth()
         copyBoard->play(pos, false, false);
 
         int score = 0;
-        //std::cout << "\e[50C"
         ;
         if (copyBoard->getAvailablePosition().size() == 0 ||
             copyBoard->isGameOver(pos, false))
 
         {
-            //std::cout << "[WIN]";
             score += copyBoard->isGameOver(pos, false) * 10000;
         }
         else
@@ -44,18 +47,18 @@ int Automaton::complexThougth()
             best_id = i;
             best_score = score;
         }
-        //std::cout<< "pos "<< i <<" ["<<positions[i]<<"] score["<<score<<"]\e[1B\r";
     }
-    //std::cout << "\e["<< 6+positions.size() <<"A";
-    //std::cout << "\e[" << positions.size() << "A";
 
     return positions[best_id];
 
 }
 
+/*
+subfunction of [complexThougth]
+simple implementation of MinMax algorithm
+*/
 int Automaton::minMax(Board *board, bool playerTurn, int depth)
 {
-    //std::cout << "OK entering deep " << depth << "\n";
     int total = 0; 
 
     std::vector<int> positions = board->getAvailablePosition();
@@ -83,7 +86,6 @@ int Automaton::minMax(Board *board, bool playerTurn, int depth)
             total += this->minMax(copyBoard, !playerTurn, depth+1);
         }
     }
-    
-    //std::cout << "| depth " << depth << " done \n";
+
     return total;
 }

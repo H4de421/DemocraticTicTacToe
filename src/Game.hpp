@@ -12,9 +12,9 @@ class Game
 private:
     bool playerTurn;
     int winner; // 0 => draw / 1=>player / -1=>IA
-public:
     Board *board;
     Automaton * automaton;
+public:
 
     Game(Board *board);
 

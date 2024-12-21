@@ -1,7 +1,8 @@
 #include "Board.hpp"
 #include <stdlib.h>
 
-Board::Board(/* args */){
+/* constructors */
+Board::Board(){
     
     this->cursorPos = 0;
     this->lastPlayed = 0;
@@ -14,11 +15,18 @@ Board::Board(Board *board)
     this->grid = board->grid;
 }
 
+/* == setter/getter == */
+int Board::getCursorPos() {
+    return this->cursorPos;
+}
+void Board::setCursorPos(int newValue) {
+    this->cursorPos = newValue;
+}
+
 /*
 print the board EMPTY
 */
-void Board::printCanevas()
-{
+void Board::printCanevas() {
     /*
         canvas information :
             Board start at (6,9)
@@ -29,7 +37,7 @@ void Board::printCanevas()
     char canevas[] = "\r\
                                                 ╭═══════╮\n\
                    ┌────────────────────────────║       ║────────────────────────────┐\n\
-  \e[0;33m╔═════════════════\e[0m╲___________________________║ ▄   ▄ ║___________________________╱\e[0;33m════════════════╗\n\    
+  \e[0;33m╔═════════════════\e[0m╲___________________________║ ▄   ▄ ║___________________________╱\e[0;33m════════════════╗\n\
   \e[0;33m║                     \e[0m╲_______________________╰─╮ ▴ ╭─╯_______________________╱                    \e[0;33m║\n\
   \e[0;33m║                               \e[0m╲______ ╲_______╰─═─╯_____╱ ______╱                                \e[0;33m║\n\
   \e[0;33m║      ╔═══════╦═══════╦═══════╗      ║                                                            ║\n\
@@ -51,7 +59,7 @@ void Board::printCanevas()
 }
 
 /*
-getAvailablePosition: return all "free" position in an int vector
+return all "free" position in an int vector
 */
 std::vector<int> Board::getAvailablePosition(){
     std::vector<int> res = {};
@@ -95,9 +103,9 @@ void Board::printTile(int gridPos)
 }
 
 /*
-play: put a pin at the [gridPos] postion in the grid
-        return false if [gridPos] is not free
-        return true otherwsie
+put a pin at the [gridPos] postion in the grid
+    return false if [gridPos] is not free
+    return true otherwsie
 */
 bool Board::play(int gridPos, bool isPlayer, bool diplay){
     if (gridPos < 0 || 
@@ -137,10 +145,16 @@ void Board::nextTurn(){
     }
 }
 
+/*
+reset cursor to 0:0 (upepr right of the screen)
+*/
 void Board::finalCleanBoard() {
     std::cout << "\e[22B" <<"\e[1;1H\e[2j";
 }
 
+/*
+print cursor depending of his current pos
+*/
 void Board::printCursor()
 {
     int shiftx =  12 + (this->cursorPos%3) * 8;
@@ -151,6 +165,9 @@ void Board::printCursor()
     std::cout << "\r\e[" << (shifty + 1) << "A" ;
 }
 
+/*
+moveCursor to the next right available spot 
+*/
 void Board::cursorRight()
 {
     bool changed = false;
@@ -178,6 +195,9 @@ void Board::cursorRight()
 
 }
 
+/*
+moveCursor to the next left available spot 
+*/
 void Board::cursorLeft()
 {
     
@@ -206,6 +226,9 @@ void Board::cursorLeft()
     }
 }
 
+/*
+moveCursor to the next up available spot 
+*/
 void Board::cursorUp()
 {
     bool changed = false;
@@ -233,6 +256,9 @@ void Board::cursorUp()
     }
 }
 
+/*
+moveCursor to the next down available spot 
+*/
 void Board::cursorDown()
 {
     
@@ -260,14 +286,20 @@ void Board::cursorDown()
     }
 }
 
+/*
+return an int refering to the team of the pin
+1 for player, -1 for Automaton, 0 if empty
+*/
 int Board::getTeamOf(int gridPos)
 {
     int res = (this->grid[gridPos]==0 ? 0 : 1);
     return res * (this->grid[gridPos] > 0 ? 1 : -1);
 }
 
-/* player won ?*/
-bool Board::isGameOver(int gridPos, bool playerTurn)
+/*
+return true if the player chose won
+*/
+bool Board::isGameOver(int gridPos, bool isPlayer)
 {
     int col = gridPos%3;
     int row = gridPos/3;
@@ -298,12 +330,17 @@ bool Board::isGameOver(int gridPos, bool playerTurn)
         if (absScore == 3)
         {
             //std::cout << "     id = "<< i <<"           score  = " << score << std::endl;
-            return playerTurn && score > 0 || !playerTurn && score < 0;
+            return isPlayer && score > 0 || !isPlayer && score < 0;
         }
     }
     return false;
 }
 
+/*
+-> for debug purpose
+print an simple version of the grid, 
+used to see inner value of the grid
+*/
 void Board::DEBUG_printgrid()
 {
     for(int i = 0 ; i< 9; i++)

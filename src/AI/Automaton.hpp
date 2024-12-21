@@ -7,8 +7,8 @@
 class Automaton
 {
 private:
-public:
     Board *board;
+public:
 
     Automaton(Board *board);
 
